@@ -1,4 +1,4 @@
 downloaded_files
-test_web_scraping.ipynb
+*.ipynb
 .env
 output_excel.xlsx
