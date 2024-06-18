@@ -28,6 +28,18 @@ from tabulate import tabulate
 
 data = []
 
+def export_to_excel(data):
+
+    df = pd.DataFrame(data)
+
+    excel_filename = 'output_excel.xlsx'
+    current_date = datetime.now()
+    sheet_name = current_date.strftime('%Y-%m-%d')
+
+    # เปิดไฟล์ Excel ที่มีอยู่แล้ว ถ้ามี และเขียนทับชีตที่ต้องการ
+    with pd.ExcelWriter(excel_filename, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
+        df.to_excel(writer, sheet_name=sheet_name, index=False)
+
 def run():
 
     driver = Driver(uc=True)
@@ -79,8 +91,16 @@ def run():
         data[index - 1] = new_item
     
     # เขียนข้อมูลลง excel file 
+    # export_to_excel(data)
+
     df = pd.DataFrame(data)
-    df.to_excel('output_excel.xlsx', index=False)
+
+    excel_filename = 'output_excel.xlsx'
+    sheet_name = 'list'
+
+    # เปิดไฟล์ Excel ที่มีอยู่แล้ว ถ้ามี และเขียนทับชีตที่ต้องการ
+    with pd.ExcelWriter(excel_filename, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
+        df.to_excel(writer, sheet_name=sheet_name, index=False)
     
     for item in data :
         url = item['link']
@@ -122,15 +142,7 @@ def run():
     # df = pd.DataFrame(data)
     # df.to_excel('output_excel.xlsx', index=False)
 
-    df = pd.DataFrame(data)
-
-    excel_filename = 'output_excel.xlsx'
-    current_date = datetime.now()
-    sheet_name = current_date.strftime('%Y-%m-%d')
-
-    # เปิดไฟล์ Excel ที่มีอยู่แล้ว ถ้ามี และเขียนทับชีตที่ต้องการ
-    with pd.ExcelWriter(excel_filename, engine='openpyxl', mode='a', if_sheet_exists='replace') as writer:
-        df.to_excel(writer, sheet_name=sheet_name, index=False)
+    export_to_excel(data)
 
 if __name__ == "__main__":
 
