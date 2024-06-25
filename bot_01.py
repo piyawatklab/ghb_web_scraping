@@ -49,37 +49,59 @@ def run():
 
     try:
         url_main = 'https://www.ghbhomecenter.com/'
-        sale_type = 'single_house-for-sale'
-        page_no = 145
-        
-        while True:
-            # url = 'https://www.ghbhomecenter.com/single_house-for-sale?&pg=1'
-            url = url_main + sale_type + '?&pg=' + str(page_no)
-            driver.get(url)
-            time.sleep(2)
+        sale_type_list = [
+            'single_house-for-sale',
+            'double_house-for-sale',
+            ]
+        county_list = [
+            'Bangkok',
+            # 'Nonthaburi',
+            # 'SamutPrakan',
+            ]
 
-            element_list = driver.find_elements(By.XPATH, ".//div[@class = 'card d-block']")
-            # len(element_list)
+        for sale_type in sale_type_list:
 
-            for element in element_list :
-                val = {}
-                val['sale_type'] = sale_type
-                val['link'] = element.find_element(By.XPATH, ".//a").get_attribute('href')
-                # val['img'] = element.find_element(By.XPATH, ".//img").get_attribute('src')
-                data.append(val)
-                
-            print('List : ' , str(len(data)))
-            page_next_list = driver.find_element(By.XPATH, ".//ul[contains(@class, 'pagination')]")
-            page_next = page_next_list.find_elements(By.XPATH, ".//li")
-            print(page_next[-1].text)
-            print(page_next[-1].text.isnumeric())
-            print(str(page_no))
-            if page_next[-1].text.isnumeric():
-                break
-            else:
-                # if 
-                page_no += 1
-                continue
+            for county in county_list:
+
+                page_no = 1
+            
+                while True:
+                    # url = 'https://www.ghbhomecenter.com/single_house-for-sale?&pg=1'
+                    url = url_main + sale_type + '/' + county + '?&pg=' + str(page_no)
+                    driver.get(url)
+                    time.sleep(2)
+
+                    element_list = driver.find_elements(By.XPATH, ".//div[@class = 'card d-block']")
+                    # if len(element_list) == 0 :
+                    if len(element_list) == 0 or page_no >= 2 :
+                        print('หยุดแล้ว หน้า :',str(page_no))
+                        print('รวมเจอทั้งหมด :' , str(len(data)))
+                        break
+
+                    for element in element_list :
+                        val = {}
+                        val['county'] = county
+                        val['sale_type'] = sale_type
+                        val['link'] = element.find_element(By.XPATH, ".//a").get_attribute('href')
+                        # val['img'] = element.find_element(By.XPATH, ".//img").get_attribute('src')
+                        data.append(val)
+                    
+                    print('หน้า :',str(page_no))
+                    print('เจอ :' , str(len(element_list)))
+                    print('เจอทั้งหมด :' , str(len(data)))
+
+                    # page_next_list = driver.find_element(By.XPATH, ".//ul[contains(@class, 'pagination')]")
+                    # page_next = page_next_list.find_elements(By.XPATH, ".//li")
+                    # print(page_next[-1].text)
+                    # print(page_next[-1].text.isnumeric())
+                    
+                    page_no += 1
+                    # if page_next[-1].text.isnumeric():
+                    #     break
+                    # else:
+                    #     # if 
+                    #     page_no += 1
+                    #     continue
 
     except Exception as e:
         print('All : ' , str(len(data)))
