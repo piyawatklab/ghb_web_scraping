@@ -59,6 +59,19 @@ def parse_row_property_details(details_str):
 
     return details_dict
 
+def parse_property_info(info_str):
+    info_list = info_str.split('\n')
+    info_dict = {}
+    
+    for item in info_list:
+        key_value = item.split(':')
+        if len(key_value) == 2:
+            key = key_value[0].strip()
+            value = key_value[1].strip()
+            info_dict[key] = value
+    
+    return info_dict
+
 def export_to_excel(data):
 
     df = pd.DataFrame(data)
@@ -171,24 +184,34 @@ def run():
                 title_element = driver.find_element(By.XPATH, ".//div[contains(@class, 'col-md-8 col-xs-push-12')]")
                 item['title'] = title_element.find_element(By.XPATH, ".//a").get_attribute('title')
 
-                item['price'] = title_element.find_element(By.XPATH, ".//h3").text
-                # numbers = re.findall(r'\d+', title_element.find_element(By.XPATH, ".//h3").text)
-                # result = ''.join(numbers)
-                # result_int = int(result)
-                # item['price'] = result_int
+                item['price_text'] = title_element.find_element(By.XPATH, ".//h3").text
+
+                numbers = re.findall(r'\d+', item['price_text'])
+                result = ''.join(numbers)
+                result_int = int(result)
+                item['price'] = result_int
                 
                 image_element = driver.find_element(By.XPATH, ".//div[contains(@class, 'img-fill')]")
                 item['image_link'] = image_element.find_element(By.XPATH, ".//img").get_attribute('src')
 
                 property_details = driver.find_element(By.XPATH, ".//div[contains(@class, 'property_details_box')]").text
-                property_details = property_details.replace("\n", " \n")
+                # property_details = property_details.replace("\n", " \n")
                 item['property_details'] = property_details
+
+                property_info = driver.find_element(By.XPATH, ".//ul[contains(@class, 'property-info-action')]").text
+                # item['property_info'] = property_info
+                item.update(parse_property_info(property_info))
 
                 row_property_details = driver.find_element(By.XPATH, ".//div[contains(@class, 'row-property-details')]").text
                 row_property_details = row_property_details.replace("\n", " \n")
                 # item['row_property_details'] = row_property_details
-                # item['line_row_property_details'] = parse_row_property_details(item['row_property_details'])
                 item.update(parse_row_property_details(row_property_details))
+                
+                if driver.find_elements(By.XPATH, ".//div[@class = 'card mt-4 mb-4']"):
+                    promotion_element = driver.find_element(By.XPATH, ".//div[@class = 'card mt-4 mb-4']")
+                    promotion_element_name = promotion_element.find_elements(By.XPATH, ".//h5")
+                    if promotion_element_name:
+                        item['promotion'] = promotion_element_name[0].text
 
                 item['update_time'] = time.strftime('%Y-%m-%d %H:%M:%S')
 
