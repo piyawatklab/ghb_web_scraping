@@ -161,7 +161,7 @@ def run():
             new_item.update(item)
             data[index - 1] = new_item
         
-        # send_chat_simple(message=str(f'เจอทั้งหมด {len(data)} รายการ กำลังเก็บข้อมูลครับ'))
+        send_chat_simple(message=str(f'เจอทั้งหมด {len(data)} รายการ กำลังเก็บข้อมูล'))
         
         # เขียนข้อมูลลง excel file 
         # export_to_excel(data)
@@ -240,10 +240,10 @@ def run():
 if __name__ == "__main__":
     
     now = time.strftime('%Y-%m-%d %H:%M:%S')
-    # send_chat_simple(message=str(f'✅ Start Runing bot_01 on {now}'))
+    send_chat_simple(message=str(f'✅ Start Runing bot_01 on {now}'))
 
     run()
     # time.sleep(2)
 
     end = time.strftime('%Y-%m-%d %H:%M:%S')
-    # send_chat_simple(message=str(f'✅ End Running bot_01 on {end}'))
+    send_chat_simple(message=str(f'✅ End Running bot_01 on {end}'))
