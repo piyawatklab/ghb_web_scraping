@@ -87,22 +87,22 @@ def export_to_excel(data):
 def run():
     try:
 
-        driver = Driver(uc=True) # TEST
-        # driver = Driver(uc=True,headless=True)
+        # driver = Driver(uc=True) # TEST
+        driver = Driver(uc=True,headless=True)
         data = []
 
         try:
             url_main = 'https://www.ghbhomecenter.com/'
             sale_type_list = [
                 'single_house-for-sale',
-                # 'double_house-for-sale',
-                # 'town_house-for-sale',
+                'double_house-for-sale',
+                'town_house-for-sale',
                 ]
             county_list = [
-                # 'Bangkok',
-                # 'Nonthaburi',
+                'Bangkok',
+                'Nonthaburi',
                 'SamutPrakan',
-                # 'Chachoengsao',
+                'Chachoengsao',
                 ]
 
             for sale_type in sale_type_list:
@@ -187,7 +187,7 @@ def run():
                 item['price_text'] = title_element.find_element(By.XPATH, ".//h3").text
 
                 numbers = re.findall(r'\d+', item['price_text'])
-                result = ''.join(numbers)
+                result = ''.join(numbers) or 0
                 result_int = int(result)
                 item['price'] = result_int
                 
@@ -214,21 +214,13 @@ def run():
                         item['promotion'] = promotion_element_name[0].text
 
                 item['update_time'] = time.strftime('%Y-%m-%d %H:%M:%S')
-
-                # property_info = driver.find_element(By.XPATH, ".//div[contains(@class, 'list-unstyled,property-info-action')]").text
-                # property_info = property_info.replace("\n", " \n")
-                # item['property_info'] = property_info
                 
                 print(item)
 
             except Exception as e:
-                send_chat_simple(message=str(f'🔴 {e}'))
+                send_chat_simple(message=str(f'🔴 รายการที่ {str(item['index'])} Error : {e}'))
                 print(e)
                 continue
-        
-        # # เขียนข้อมูลลง excel file 
-        # df = pd.DataFrame(data)
-        # df.to_excel('output_excel.xlsx', index=False)
 
         export_to_excel(data)
 
