@@ -137,19 +137,8 @@ def run():
                         print(sale_type , county , 'หน้า :',str(page_no))
                         print('เจอ :' , str(len(element_list)))
                         print('เจอทั้งหมด :' , str(len(data)))
-
-                        # page_next_list = driver.find_element(By.XPATH, ".//ul[contains(@class, 'pagination')]")
-                        # page_next = page_next_list.find_elements(By.XPATH, ".//li")
-                        # print(page_next[-1].text)
-                        # print(page_next[-1].text.isnumeric())
                         
                         page_no += 1
-                        # if page_next[-1].text.isnumeric():
-                        #     break
-                        # else:
-                        #     # if 
-                        #     page_no += 1
-                        #     continue
 
         except Exception as e:
             send_chat_simple(message=str(f'🔴 {e}'))
@@ -164,8 +153,6 @@ def run():
         send_chat_simple(message=str(f'เจอทั้งหมด {len(data)} รายการ กำลังเก็บข้อมูล'))
         
         # เขียนข้อมูลลง excel file 
-        # export_to_excel(data)
-
         df = pd.DataFrame(data)
 
         excel_filename = 'output_excel.xlsx'
@@ -195,16 +182,13 @@ def run():
                 item['image_link'] = image_element.find_element(By.XPATH, ".//img").get_attribute('src')
 
                 property_details = driver.find_element(By.XPATH, ".//div[contains(@class, 'property_details_box')]").text
-                # property_details = property_details.replace("\n", " \n")
                 item['property_details'] = property_details
 
                 property_info = driver.find_element(By.XPATH, ".//ul[contains(@class, 'property-info-action')]").text
-                # item['property_info'] = property_info
                 item.update(parse_property_info(property_info))
 
                 row_property_details = driver.find_element(By.XPATH, ".//div[contains(@class, 'row-property-details')]").text
                 row_property_details = row_property_details.replace("\n", " \n")
-                # item['row_property_details'] = row_property_details
                 item.update(parse_row_property_details(row_property_details))
                 
                 if driver.find_elements(By.XPATH, ".//div[@class = 'card mt-4 mb-4']"):
